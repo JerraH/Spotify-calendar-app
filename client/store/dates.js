@@ -7,7 +7,8 @@ import 'datejs'
  */
 
 const GET_MONTH = 'GET_MONTH'
-const SET_MONTH = 'SET_MONTH'
+const NEXT_MONTH = 'NEXT_MONTH'
+const LAST_MONTH = 'LAST_MONTH'
 const GET_WEEK = 'GET_WEEK'
 const SET_WEEK = 'SET_WEEK'
 const GET_DAY = 'GET_DAY'
@@ -18,37 +19,69 @@ const GET_TODAY = 'GET_TODAY'
  * INITIAL STATE
  */
 
+const monthsArr = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December'
+]
+
 const defaultDate = {
   month: Date.today().getMonth(),
   year: Date.today().getYear(),
-  monthName: '',
-  monthLength: 0
+  monthName: monthsArr[Date.today().getMonth()],
+  monthLength: Date.getDaysInMonth(
+    Date.today().getYear(),
+    Date.today().getMonth()
+  )
 }
-
-const monthsArr = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 
 /**
  * ACTION CREATORS
  */
 
-const getMonth = month => ({
+export const getMonth = month => ({
   type: GET_MONTH,
   month
+})
+
+export const nextMonth = () => ({
+  type: NEXT_MONTH
+})
+
+export const lastMonth = () => ({
+  type: LAST_MONTH
 })
 
 /**
  * REDUCER
  */
 
- const reducer = (state = defaultState, action) => {
-   switch (action.type) {
-     case GET_MONTH:
-      return {month: action.month, monthName: }
-     default:
-       return state
-   }
- }
+const reducer = (state = defaultDate, action) => {
+  switch (action.type) {
+    case NEXT_MONTH:
+      return {
+        month: state.month + 1,
+        monthName: monthsArr[state.month + 1],
+        monthLength: Date.getDaysInMonth(state.year, state.month + 1)
+      }
+    case LAST_MONTH:
+      return {
+        month: state.month - 1,
+        monthName: monthsArr[state.month - 1],
+        monthLength: Date.getDaysInMonth(state.year, state.month - 1)
+      }
+    default:
+      return state
+  }
+}
 
- export default reducer
-
-
+export default reducer

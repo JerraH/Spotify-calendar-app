@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 import 'datejs'
 import {Link} from 'react-router-dom'
 import EventForm from './Event-Form.jsx'
-import {getEventsOnDay} from '../store'
+import {getEventsOnDay, nextMonth, lastMonth} from '../store'
 
 class Calendar extends Component {
   constructor(props) {
@@ -15,11 +15,9 @@ class Calendar extends Component {
       showForm: false
     }
     this.formAppear = this.formAppear.bind(this)
-    this.nextMonth = this.nextMonth.bind(this)
-  }
-
-  nextMonth = () => {
-    this.state.month.increment()
+    this.nextMonthBound = this.props.nextMonthBound.bind(this)
+    this.incrementMonth = this.incrementMonth.bind(this)
+    this.decrementMonth = this.decrementMonth.bind(this)
   }
 
   formAppear = event => {
@@ -30,10 +28,13 @@ class Calendar extends Component {
   }
 
   componentDidMount() {
-    this.props.getMonthBound()
-    .then(
-      this.props.getAllEventsOnDay(this.props.month)
-    )
+    this.props.getAllEventsOnDay(this.props.month)
+  }
+  incrementMonth() {
+    this.props.nextMonthBound(this.props.month + 1)
+  }
+  decrementMonth() {
+    this.props.lastMonthBound(this.props.month - 1)
   }
 
   render() {
@@ -41,9 +42,9 @@ class Calendar extends Component {
       <div className="card calendar">
         {this.state.showForm ? <EventForm /> : null}
         <div className="card-title">
-          <button type="button">left</button>
+          <button type="button" onClick={this.decrementMonth}>left</button>
           <h1>{this.props.monthName}</h1>
-          <button type="button" onClick={this.nextMonth}>
+          <button type="button" onClick={this.incrementMonth}>
             r
           </button>
         </div>
@@ -54,12 +55,15 @@ class Calendar extends Component {
             return (
               <Day
                 date={i + 1}
-                key={this.props.month + i}
-                month={this.props.month}
+                key={this.props.month + '&' + i}
                 onClick={this.formAppear}
-                events={this.props.events.filter(event => {
-                  return event.startDate === i + 1
-                })}
+                events={
+                  this.props.events
+                    ? this.props.events.filter(event => {
+                        return event.startDate === i + 1
+                      })
+                    : null
+                }
               />
             )
           })}
@@ -72,10 +76,10 @@ const mapStateToProps = (state, ownProps) => {
   return {
     events: state.events,
     user: state.user,
-    month: state.month,
-    monthName: state.monthName,
-    monthLength: state.monthLength,
-    firstDay: state.firstDay
+    month: state.dates.month,
+    monthName: state.dates.monthName,
+    monthLength: state.dates.monthLength,
+    firstDay: state.dates.firstDay
   }
 }
 
@@ -84,8 +88,13 @@ const mapDispatchToProps = dispatch => {
     getAllEventsOnDay(month, user) {
       dispatch(getEventsOnDay(month, user))
     },
-    getMonthBound() {
-      dispatch(getMonth())
+    lastMonthBound(month) {
+      dispatch(lastMonth())
+      dispatch(getEventsOnDay(month))
+    },
+    nextMonthBound(month) {
+      dispatch(nextMonth())
+      dispatch(getEventsOnDay(month))
     }
   }
   //getmonth

@@ -26,8 +26,7 @@ export default class Day extends Component {
 }
 
 // const mapStateToProps = (state, ownProps) => ({
-//   events: state.events,
-//   user: state.user
+//   month: state.month
 // })
 
 // const mapDispatchToProps = dispatch => {
@@ -40,4 +39,3 @@ export default class Day extends Component {
 //   //getactivities
 // }
 
-// export default connect(mapStateToProps, mapDispatchToProps)(Day)

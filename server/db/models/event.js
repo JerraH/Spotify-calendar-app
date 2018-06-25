@@ -17,6 +17,12 @@ const Event = db.define(
     endDate: {
       type: Sequelize.INTEGER,
     },
+    startTime: {
+      type: Sequelize.TIME
+    },
+    endTime: {
+      type: Sequelize.TIME,
+    },
     month: {
       type: Sequelize.INTEGER,
       allowNull: false
