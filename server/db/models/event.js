@@ -1,19 +1,30 @@
 const Sequelize = require('sequelize')
 const db = require('../db')
+require('datejs')
+var moment = require('moment')
+moment().format()
 
-const Event = db.define('event', {
+const Event = db.define(
+  'event',
+  {
     name: {
-        type: Sequelize.STRING
+      type: Sequelize.STRING
     },
     startDate: {
-        type: Sequelize.DATE,
-        allowNull: false
+      type: Sequelize.INTEGER,
+      allowNull: false
     },
     endDate: {
-        type: Sequelize.DATE,
-        allowNull: false
+      type: Sequelize.INTEGER,
+    },
+    month: {
+      type: Sequelize.INTEGER,
+      allowNull: false
     },
     description: {
-        type: Sequelize.TEXT
+      type: Sequelize.TEXT
     }
-})
+  },
+)
+
+module.exports = Event
