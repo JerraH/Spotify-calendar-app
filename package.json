@@ -16,10 +16,10 @@
     "prettify": "prettier --write \"**/*.{js,jsx,json,css,scss,md}\"",
     "postinstall": "touch secrets.js",
     "seed": "node script/seed.js",
-    "start": "node server",
+    "start": "node CalendarBackend",
     "start-dev": "NODE_ENV='development' npm run build-client-watch & npm run start-server",
-    "start-server": "nodemon server -e html,js,scss --ignore public --ignore client",
-    "test": "NODE_ENV='test' mocha \"./server/**/*.spec.js\" \"./client/**/*.spec.js\" \"./script/**/*.spec.js\" --require @babel/polyfill --require @babel/register"
+    "start-server": "nodemon CalendarBackend -e html,js,scss --ignore public --ignore client",
+    "test": "NODE_ENV='test' mocha \"./CalendarBackend/**/*.spec.js\" \"./CalendarFrontend/**/*.spec.js\" \"./script/**/*.spec.js\" --require @babel/polyfill --require @babel/register"
   },
   "lint-staged": {
     "*.{js,jsx}": [

@@ -9,8 +9,9 @@ const Navbar = ({handleClick, isLoggedIn}) => (
     <h1>Todo</h1>
     <nav>
         <div>
-          <Link to="/login">Today</Link>
-          <Link to="/signup">Tomorrow</Link>
+          <Link to="/today">Today</Link>
+          <Link to="/tomorrow">Tomorrow</Link>
+          <Link to="/calendar">Calendar</Link>
         </div>
 
     </nav>

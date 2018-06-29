@@ -43,6 +43,14 @@ div.calendar {
   padding-left: 5%;
 
 }
+.blue {
+  h1 {
+    color: blue;
+  }
+  button {
+    background-color: blue;
+  }
+}
 
 .card-title {
   width: 100%;
@@ -67,6 +75,24 @@ div.day {
   height: 20vh;
   border: $border;
   padding: 1rem;
+  .topLevel {
+    display: flex;
+    align-content: space-between;
+    .date {
+      flex: 6 1 auto;
+
+    }
+    .addEventButton {
+      flex: 20px 1 auto;
+      max-width: 50px;
+      font-size: 1.5rem;
+      color:white;
+      border: 1px solid blue;
+      padding: 2px;
+      background-color:blue;
+    }
+
+  }
 
 }
 
@@ -80,3 +106,27 @@ div.day:hover {
   background-color: white;
   border: $border;
 }
+
+.eventPrint {
+  font-size: .75rem;
+  color: darkgreen;
+  display: flex;
+  align-content: space-between;
+  span {
+    flex: 1 0 auto;
+  }
+}
+
+.weekdayNames {
+  display: flex;
+  width: 91%;
+  .dayofweek {
+    flex: 1 1 auto;
+    width: 13%;
+    border: $border;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+  }
+}
+

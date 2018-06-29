@@ -1,6 +1,7 @@
 import axios from 'axios'
 import history from '../history'
 import 'datejs'
+import moment from 'moment'
 
 /**
  * ACTION TYPES
@@ -35,13 +36,13 @@ const monthsArr = [
 ]
 
 const defaultDate = {
-  month: Date.today().getMonth(),
-  year: Date.today().getYear(),
-  monthName: monthsArr[Date.today().getMonth()],
-  monthLength: Date.getDaysInMonth(
-    Date.today().getYear(),
-    Date.today().getMonth()
-  )
+  date: moment(),
+  month: moment().month(),
+  year: moment().year(),
+  monthName: monthsArr[moment().month()],
+  monthLength: Date.getDaysInMonth(moment().year(), moment().month()),
+  firstDay: moment()
+    .date(1)
 }
 
 /**
@@ -69,15 +70,18 @@ const reducer = (state = defaultDate, action) => {
   switch (action.type) {
     case NEXT_MONTH:
       return {
-        month: state.month + 1,
-        monthName: monthsArr[state.month + 1],
-        monthLength: Date.getDaysInMonth(state.year, state.month + 1)
+        date: state.date.add(1, 'month'),
+        month: state.date.month(),
+        monthName: monthsArr[state.date.month()],
+        monthLength: Date.getDaysInMonth(state.date.year(), state.date.month()),
+        firstDay: state.firstDay.add(1, 'month')
       }
     case LAST_MONTH:
       return {
-        month: state.month - 1,
-        monthName: monthsArr[state.month - 1],
-        monthLength: Date.getDaysInMonth(state.year, state.month - 1)
+        month: state.date.subtract(1, 'month'),
+        monthName: monthsArr[state.date.month()],
+        monthLength: Date.getDaysInMonth(state.date.year(), state.date.month()),
+        firstDay: state.firstDay.subtract(1, 'month')
       }
     default:
       return state

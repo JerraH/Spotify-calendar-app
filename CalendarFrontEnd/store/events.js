@@ -33,9 +33,9 @@ const createNewEvent = event => ({
   type: CREATE_EVENT,
   event
 })
-const deleteEvent = event => ({
+const deleteSingleEvent = eventId => ({
   type: DELETE_EVENT,
-  event
+  eventId
 })
 
 const getEventsOnOneDay = dayEvents => ({
@@ -54,20 +54,30 @@ export const getEventList = () => dispatch => {
   })
 }
 
-export const getEventsOnDay = (month, day, user) => dispatch => {
+export const getAllEventsForMonth = (month, user) => dispatch => {
   axios
-    .get(`/api/events/${month}`)
+    .get(`/api/events/${month}/${user.id}`)
     .then(res => {
-      dispatch(getEventsOnOneDay(res.data))
+      dispatch(getEventsForMonth(res.data))
     })
     .catch(error => console.log(error))
 }
 
-export const createEvent = event => dispatch => {
+export const createEvent = (event, user) => dispatch => {
   axios
-    .post('/api/events', event)
+    .post(`/api/events/${user.id}`, event)
     .then(res => {
       dispatch(createNewEvent(res.data))
+    })
+    .catch(error => console.log(error))
+}
+
+export const deleteEvent = eventId => dispatch => {
+  axios
+    .delete(`api/events/id/${eventId}`)
+    .then(res => {
+      console.log('my res.data', res.data)
+      dispatch(deleteSingleEvent(res.data))
     })
     .catch(error => console.log(error))
 }
@@ -80,10 +90,12 @@ const reducer = (state = events, action) => {
   switch (action.type) {
     case GET_ALL_EVENTS:
       return action.allEvents
-    case GET_EVENTS_ON_DAY:
-      return action.dayEvents
+    case GET_EVENTS_FOR_MONTH:
+      return action.monthEvents
     case CREATE_EVENT:
       return [...state, action.event]
+    case DELETE_EVENT:
+      return [...state.filter(event => event.id !== action.eventId)]
     default:
       return state
   }

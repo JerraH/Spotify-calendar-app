@@ -4,7 +4,8 @@ import {connect} from 'react-redux'
 import 'datejs'
 import {Link} from 'react-router-dom'
 import EventForm from './Event-Form.jsx'
-import {getEventsOnDay, nextMonth, lastMonth} from '../store'
+import {getAllEventsForMonth, nextMonth, lastMonth} from '../store'
+import moment from 'moment'
 
 class Calendar extends Component {
   constructor(props) {
@@ -12,43 +13,87 @@ class Calendar extends Component {
     this.daysArr = []
 
     this.state = {
-      showForm: false
+      showForm: false,
     }
     this.formAppear = this.formAppear.bind(this)
     this.nextMonthBound = this.props.nextMonthBound.bind(this)
     this.incrementMonth = this.incrementMonth.bind(this)
     this.decrementMonth = this.decrementMonth.bind(this)
+    this.formDisappear = this.formDisappear.bind(this)
+    this.daysOfWeek = [
+      'Sunday',
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday'
+    ]
   }
 
-  formAppear = event => {
+  formAppear = date => {
+    this.setState({
+      defaultFormDate: date,
+      defaultFormMonth: this.props.month,
+      defaultFormYear: this.props.year
+    })
+
     if (!this.state.showForm) {
+      console.log(this.state.defaultFormDate)
       this.setState({showForm: true})
     }
-    event.target.setSelected()
+  }
+
+  formDisappear() {
+    this.setState({showForm: false})
   }
 
   componentDidMount() {
-    this.props.getAllEventsOnDay(this.props.month)
+    this.props.getAllEventsForMonthBound(this.props.month, this.props.user)
   }
   incrementMonth() {
-    this.props.nextMonthBound(this.props.month + 1)
+    this.props.nextMonthBound(this.props.month + 1, this.props.user)
+
   }
   decrementMonth() {
-    this.props.lastMonthBound(this.props.month - 1)
+    this.props.lastMonthBound(this.props.month - 1, this.props.user)
   }
 
   render() {
     return (
       <div className="card calendar">
-        {this.state.showForm ? <EventForm /> : null}
+        {this.state.showForm ? (
+          <EventForm
+            date={this.state.defaultFormDate}
+            year={this.state.defaultFormYear}
+            month={this.state.defaultFormMonth}
+            formDisappear={this.formDisappear}
+          />
+        ) : null}
         <div className="card-title">
-          <button type="button" onClick={this.decrementMonth}>left</button>
+          <button type="button" onClick={this.decrementMonth}>
+            left
+          </button>
           <h1>{this.props.monthName}</h1>
           <button type="button" onClick={this.incrementMonth}>
             r
           </button>
         </div>
+        <div className="weekdayNames">
+          {this.daysOfWeek.map(name => {
+            return (
+              <div className="dayofweek" key={name}>
+                {name}
+              </div>
+            )
+          })}
+        </div>
 
+        {Array(this.props.firstDay.weekday())
+          .fill()
+          .map((x, i) => {
+            return <Day key={'dayofweek' + i} />
+          })}
         {Array(this.props.monthLength)
           .fill()
           .map((x, i) => {
@@ -79,22 +124,23 @@ const mapStateToProps = (state, ownProps) => {
     month: state.dates.month,
     monthName: state.dates.monthName,
     monthLength: state.dates.monthLength,
-    firstDay: state.dates.firstDay
+    firstDay: state.dates.firstDay,
+    year: state.dates.year
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    getAllEventsOnDay(month, user) {
-      dispatch(getEventsOnDay(month, user))
+    getAllEventsForMonthBound(month, user) {
+      dispatch(getAllEventsForMonth(month, user))
     },
-    lastMonthBound(month) {
+    lastMonthBound(month, user) {
       dispatch(lastMonth())
-      dispatch(getEventsOnDay(month))
+      dispatch(getAllEventsForMonth(month, user))
     },
-    nextMonthBound(month) {
+    nextMonthBound(month, user) {
       dispatch(nextMonth())
-      dispatch(getEventsOnDay(month))
+      dispatch(getAllEventsForMonth(month, user))
     }
   }
   //getmonth

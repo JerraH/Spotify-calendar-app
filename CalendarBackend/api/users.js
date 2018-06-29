@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const {Event} = require('../db/models')
+const {Event, User} = require('../db/models')
 const db = require('../db')
 const Sequelize = require('sequelize')
 module.exports = router
@@ -32,13 +32,11 @@ router.get('/:month', (req, res, next) => {
   })
 
 
-router.post('/', async (req, res, next) => {
-  Event.create
-  try {
-    const event = await Event.create(req.body)
-    res.json(event)
-  }
-  catch (err) {
-    next (err)
-  }
-})
+router.post('/:userID', (req, res, next) => {
+  User.findById(req.params.userId)
+  .then(user =>
+    user.addEvent(req.body)
+    .then(event => res.json(event))
+    .catch(next))
+  })
+
