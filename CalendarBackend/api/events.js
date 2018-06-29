@@ -38,3 +38,11 @@ router.post('/:userId', (req, res, next) => {
       .catch(next)
   )
 })
+
+router.delete('/id/:eventId', (req, res, next) => {
+  Event.destroy({
+    where: {
+      id: req.params.eventId}})
+  .then(event => res.json(event))
+  .catch(next)
+})
